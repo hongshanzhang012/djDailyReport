@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+	<head>
+		<title>url365-list</title>
+
+		<!-- Meta tags describe a page's content;  -->
+		<!-- the meta tags don't appear on the page itself, --> 
+		<!-- they help tell search engines what a web page is about. -->
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="hongshan zhang">
+
+        <link href="{% static "img/favicon.ico" %}" rel="shortcut icon">
+        <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+        <link href="{% static "css/bootstrap-responsive.css" %}" rel="stylesheet">
+        <link href="{% static "css/style.css" %}" rel="stylesheet">
+        <link href="{% static "css/style-responsive.css" %}" rel="stylesheet">
+        
+        <!-- ?os.urandom(23423) is to make django does not cache static files -->
+        <link href="{% static "css/delete-form.css?os.urandom(101273)" %}" rel="stylesheet">
+        {% block style %}{% endblock style %}
+		
+	</head>
+	
+	<body>
+		<div id="wrapper" style="width:100%; text-align:center">
+			</br>
+			</br>
+			</br>
+			<img src="{% static "img/web365.png" %}" alt="Picture of Web365" /> <!-- Images -->
+		</div>
+		
+		<!-- data captured within this form is sent to the URL /rango/add_page/ as a HTTP POST request -->
+		<!-- id="page_form" IDs are good when you plan on doing some sort of client-side work on the element, as an element that has an ID can easily and quickly be retrieved by Javascript-->
+		
+		
+		<!-- {{form.title}} this is reserved parameter, action is the url-->
+		
+
+		<form id="delete_form" method="post" action="/delete/">
+		
+			<!-- Cross-Site Request Forgery (CSRF)token, it is required by Django -->
+			{% csrf_token %}
+			
+			<div class="fieldset" >
+				<div class="email">			
+				{{form.email}}	
+				{{ form.email.label }}:{{form.email.value}}
+				
+				</div>
+
+				</br>
+				<div class="label">
+					<label >The urls you are monitoring:</label>
+				</div>
+
+
+				</br>
+				<div class="url">
+					{{form.urls}}
+				</div>
+
+				</br>
+				
+				<!-- input type="submit" name="save" value="Save Items" /> -->
+				<input type="submit" name="delete" value="Delete url" class="submit_button"/>
+				</br>
+
+				{{ form.non_field_errors }}
+				{% if messages %}
+				<ul class="messages">
+				    {% for message in messages %}
+				    	<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				    {% endfor %}
+				</ul>
+				{%else%}
+					<p>&nbsp</p>
+				{% endif %}
+				</br>
+
+			</div>
+			
+		</form>
+
+
+	</body>
+</html>
