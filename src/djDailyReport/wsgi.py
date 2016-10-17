@@ -78,8 +78,10 @@ git merge hotfix
 git branch -d hotfix #Deleted branch hotfix (3a0874c).
 
 #remote link named as "origin", usr/pass: gmail, g2
-git remote add origin https://github.com/hongshanzhang012/djWeb365.git
-#this branch will be our master branch
+#add this repository from web first, then
+git remote add origin https://github.com/hongshanzhang012/djDailyReport.git
+#this branch will be our master branch 
+#master is only a parameter stored in .git/config
 git push -u origin master
 
 #clone a copy on deploy server

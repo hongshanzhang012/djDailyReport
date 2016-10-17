@@ -22,3 +22,4 @@ urlpatterns = [
     url(r'^', include('register.urls')),
     url(r'^register/', include('register.urls')),    
 ]
+

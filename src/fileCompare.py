@@ -1,106 +1,145 @@
 import ConfigParser
+import string
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-## Open the file with read only permit
-srcFile = open('iphoneCompare.txt')
-desFile = open ('resultFile.txt', 'w')
 
-config = ConfigParser.RawConfigParser(allow_no_value=True)
-config.read('cmc.futuredial.com.ini')
+def isDriveLetter(tmpString):
+    #string.lowercase[1:26]
+    #string.uppercase[1:26]
+    if len(tmpString)>=3:
+        c=tmpString[0].upper()
+        if c>='A' and c<='Z' and tmpString[1]==':' and tmpString[2]==' ':
+            return True
+    return False
 
-line = srcFile.readline()
-while line:
-    if line.find("Checking:", 0, len(line)-1)>=0:
-        #pc name
-        desFile.write('\n'+line[10:])
-        
-        #company
-        tmp=srcFile.readline()
-        desFile.write(tmp[0:10])
-        id=tmp[10:len(tmp)]
-        id=id.replace('\r','')
-        id=id.replace('\n','')
-        
-        try:
-            companyName=config.get('CompanyID',id)
-        except ConfigParser.NoOptionError, err:
-            companyName=id
-        desFile.write(companyName)
-        desFile.write('\n')
-        
-        #server
-        tmp=srcFile.readline()
-        desFile.write(tmp)
-        
-        #site
-        tmp=srcFile.readline()
-        desFile.write(tmp[0:7])
-        id=tmp[7:len(tmp)]
-        id=id.replace('\r','')
-        id=id.replace('\n','')
-
-        try:
-            siteName=config.get('SiteID',id)
-        except ConfigParser.NoOptionError, err:
-            siteName=id
-        desFile.write(siteName)
-        desFile.write('\n')
-        
-        #solution
-        tmp=srcFile.readline()
-        desFile.write(tmp[0:11])
-        id=tmp[11:len(tmp)]
-        id=id.replace('\r','')
-        id=id.replace('\n','')
-        try:
-            solutionName=config.get('SolutionID',id)
-        except ConfigParser.NoOptionError, err:
-            solutionName=id
-
-        desFile.write(solutionName)
-        desFile.write('\n')
-
-        #product
-        tmp=srcFile.readline()
-        desFile.write(tmp[0:10])
-        id=tmp[10:len(tmp)]
-        id=id.replace('\r','')
-        id=id.replace('\n','')
-        try:
-            ProductName=config.get('ProductID',id)
-        except ConfigParser.NoOptionError, err:
-            ProductName=id
-
-        desFile.write(ProductName)
-        desFile.write('\n')
-
-        #disk space title        
-        #disk space and other info until "file diff"        
-        tmp=srcFile.readline()
-        if len(tmp)>1 and tmp.find('FreeSpace', 0, len(tmp)-1)>=0:
-            desFile.write(tmp)
+def fc():
+    fileCompare('iphoneCompare.txt', 'resultFile.txt')
+    
+def fileCompare(src, dec):
+    ## Open the file with read only permit
+    srcFile = open(src)
+    desFile = open (dec, 'w')
+    
+    config = ConfigParser.RawConfigParser(allow_no_value=True)
+    config.read(os.path.join(BASE_DIR, 'src/cmc.futuredial.com.ini'))
+    
+    line = srcFile.readline()
+    while line:
+        #in this 'if' process data of a whole company
+        if line.find("Checking:", 0, len(line))>=0: 
+            #pc name
+            textToWrite='\r\n'+line[10:]
+            
+            #company
+            tmp=srcFile.readline()
+            textToWrite=textToWrite+tmp[0:10]
+            id=tmp[10:len(tmp)]
+            id=id.replace('\r','')
+            id=id.replace('\n','')
+            
+            try:
+                companyName=config.get('CompanyID',id)
+            except ConfigParser.NoOptionError, err:
+                companyName=id
+            textToWrite=textToWrite+companyName
+            textToWrite=textToWrite+'\r\n'
+            
+            #server
+            tmp=srcFile.readline()
+            textToWrite=textToWrite+tmp
+            
+            #site
+            tmp=srcFile.readline()
+            textToWrite=textToWrite+tmp[0:7]
+            id=tmp[7:len(tmp)]
+            id=id.replace('\r','')
+            id=id.replace('\n','')
+    
+            try:
+                siteName=config.get('SiteID',id)
+            except ConfigParser.NoOptionError, err:
+                siteName=id
+            textToWrite=textToWrite+siteName
+            textToWrite=textToWrite+'\r\n'
+            
+            #solution
+            tmp=srcFile.readline()
+            textToWrite=textToWrite+tmp[0:11]
+            id=tmp[11:len(tmp)]
+            id=id.replace('\r','')
+            id=id.replace('\n','')
+            try:
+                solutionName=config.get('SolutionID',id)
+            except ConfigParser.NoOptionError, err:
+                solutionName=id
+    
+            textToWrite=textToWrite+solutionName
+            textToWrite=textToWrite+'\r\n'
+    
+            #product
+            tmp=srcFile.readline()
+            textToWrite=textToWrite+tmp[0:10]
+            id=tmp[10:len(tmp)]
+            id=id.replace('\r','')
+            id=id.replace('\n','')
+            try:
+                ProductName=config.get('ProductID',id)
+            except ConfigParser.NoOptionError, err:
+                ProductName=id
+    
+            textToWrite=textToWrite+ProductName
+            textToWrite=textToWrite+'\r\n'
+    
+            #FreeSpace, disk space, "file diff", Missingfiles        
             tmp=srcFile.readline()
             while tmp:
-                if len(tmp)>1 and tmp.find('file diff:', 0, len(tmp)-1)<0 and tmp.find('Missing',0, len(tmp))<0:
-                    for s in tmp.split():
-                        if s.isdigit()==False:
-                            for i in range(1,10-len(s)):
-                                s=s+' '
-                        else:
-                            s=str(int(int(s)/(1073741824)))+'G'
-                            for i in range(1,15-len(s)):
-                                s=s+' '
-                            
-                        desFile.write(s)
-                            
-                    desFile.write('\n')
+                if len(tmp)>1 and tmp.find('FreeSpace', 0, len(tmp))>=0:
+                    needToWrite=False
+                    textToWrite=textToWrite+tmp
                     tmp=srcFile.readline()
-                elif tmp.find('file diff:', 0, len(tmp)-1)>=0 or tmp.find('Missing',0, len(tmp))>=0:
+                    while tmp:#C:, D:, E:
+                        if isDriveLetter(tmp):
+                            pos=0
+                            cOrd=False
+                            noEnoughSpace=False
+                            for s in tmp.split():#
+                                pos=pos+1
+                                if s.isdigit()==False:
+                                    if s.find('C:', 0, len(s))>=0 or s.find('D:',0, len(s))>=0:
+                                        cOrd=True
+                                    for i in range(1,10-len(s)):
+                                        s=s+' '
+                                else:
+                                    diskSpace=int(int(s)/(1073741824))
+                                    if pos==2 and diskSpace<=25:
+                                        noEnoughSpace=True
+                                    s=str(diskSpace)+'G'
+                                    for i in range(1,15-len(s)):
+                                        s=s+' '
+                                    
+                                textToWrite=textToWrite+s
+                            
+                            if cOrd==True and noEnoughSpace==True:
+                                needToWrite=True        
+                            textToWrite=textToWrite+'\r\n'
+                            tmp=srcFile.readline()
+                        elif tmp.find('Checking:', 0, len(tmp))>=0:
+                            line=tmp
+                            break
+                        else:
+                            tmp=srcFile.readline()
+                    if needToWrite==True:
+                        desFile.write(textToWrite)
+                    
+                elif tmp.find("Checking:", 0, len(line))>=0:
                     line=tmp
                     break
-        else:
+                else:
+                    tmp=srcFile.readline()
             line=tmp
-    else:
-        line=srcFile.readline()    
-srcFile.close()
-desFile.close()
-
+        else:
+            line=srcFile.readline()    
+    srcFile.close()
+    desFile.close()
+    

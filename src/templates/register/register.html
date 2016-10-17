@@ -21,8 +21,8 @@
         <link href="{% static "css/style.css" %}" rel="stylesheet">
         <link href="{% static "css/style-responsive.css" %}" rel="stylesheet">
         
-        <!-- ?os.urandom(23423) is to make django does not cache static files -->
-        <link href="{% static "css/register-form.css?os.urandom(1341273)" %}" rel="stylesheet">
+        <!-- ?os.urandom(23223) is to make django does not cache static files -->
+        <link href="{% static "css/register-form.css?os.urandom(134273)" %}" rel="stylesheet">
         {% block style %}{% endblock style %}
 		
 	</head>
@@ -32,7 +32,7 @@
 			</br>
 			</br>
 			</br>
-			<img src="{% static "img/web365.png" %}" alt="Picture of Web365" /> <!-- Images -->
+			<img src="{% static "img/web365.png" %}" alt="Picture of file uploader" /> <!-- Images -->
 		</div>
 		
 		<!-- data captured within this form is sent to the URL /rango/add_page/ as a HTTP POST request -->
@@ -41,82 +41,16 @@
 		
 		<!-- {{form.title}} this is reserved parameter-->
 		
-
-		<form id="register_form" method="post" action="/register/">
-		
-			<!-- Cross-Site Request Forgery (CSRF)token, it is required by Django -->
-			{% csrf_token %}
-			
-			<!-- {% for hidden in form.hidden_fields %} -->
-				<!-- {{ hidden }} -->
-			<!-- {% endfor %} -->
-			
-			<!-- {% for field in form.visible_fields %}  -->
-				<!-- {{ field.errors }}  -->
-				<!-- {{ field.help_text}} -->
-				<!-- {{ field }} -->
-			<!-- {% endfor %} -->
-			<div class="fieldset" >
-				<div class="url">
-					{% if form.url.errors %}
-						<small>{{form.url.errors}}</small>
-					{%else%}
-						<p>&nbsp</p>
-					{% endif %}
-					
-					{{form.url}}
-					<p><label class="text_box_label" for="{{form.url.label}}">{{form.url.label}}</label></p>
-					
-				</div>
-
-				<div class="email">				
-					{% if form.email.errors %}
-						<small>{{form.email.errors}}</small>
-					{%else%}
-						<p>&nbsp</p>
-					{% endif %}
-					
-					{{form.email}}
-					<p><label class="text_box_label" for="{{form.email.label}}">{{form.email.label}}</label></p>
-				</div>
-
-				</br>
-				</br>
-				</br>
-				<label class="label_label">Notify me when there is:</label>
-				</br>
-				</br>
-				
-				<label class="check_box_label" for="{{form.content_change.label}}">{{form.content_change.label}}</label>
-				{{form.content_change}}
-				{{form.content_change.errors}}
-				</br>
-				
-				<label class="check_box_label" for="{{form.server_is_down.label}}">{{form.server_is_down.label}}</label>
-				{{form.server_is_down}}
-							
-				</br>
-				</br>
-				</br>
-				
-				
-				<input type="submit" name="submit" value="Submit" class="submit_button"/>
-				</br>
-
-				{% if messages %}
-				<ul class="messages">
-				    {% for message in messages %}
-				    	<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-				    {% endfor %}
-				</ul>
-				{%else%}
-					<p>&nbsp</p>
-				{% endif %}
-				</br>
-				<label class="label_comment">Keep an eye on a url and notify you when there is content change or, when the server is down.</label>
-		
-
-			</div>
+        <!-- Upload form. Note enctype attribute! -->
+        <form class="mainform" id="register_form" action="/register/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+            <p>
+                {{ form.docfile.errors }}
+                {{ form.docfile }}
+            </p>
+            <p><input type="submit" value="Upload" /></p>
 		</form>
 
 

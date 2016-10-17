@@ -2,7 +2,7 @@
 #it is recommended that each app has a urls.py
 # remember to add this urls.py tuple to project's urls.py
 
-from django.conf.urls import patterns, url 
+from django.conf.urls import url 
 from register import views
 
 #r'^$': regular express, represents an empty string
@@ -14,7 +14,6 @@ urlpatterns = [
                url(r'^$', views.register_page,name='register_page'),
                url(r'^register/', views.register_page,name='register_page'),
                #use www.url365.com/delete/?email=nzhang@futuredial.com&url=www.baidu.com
-               url(r'^delete/', views.delete_page,name='delete_page'),
 #below is another way to pass parameters, this may go wrong since it uses regex.               
 #               url(r'^delete/(?P<category_name_url>\w+)/add_page/$', views.delete_page, name='delete_page'), # NEW MAPPING!
 

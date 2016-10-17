@@ -53,10 +53,12 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'djDailyReport.urls'
 
+#specify TEMPLATES_DIRS
+TEMPLATE_PATH=os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_PATH,],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,5 +101,16 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+STATIC_URL='/static/'
+STATIC_PATH=os.path.join(BASE_DIR,'static'); #STATIC_ROOT
+STATIC_PATH=STATIC_PATH.replace('src', 'env') #change path from djWeb365/src/static to djWeb365/env/static
+#STATIC_PATH=os.path.join(BASE_DIR,'static'); #STATIC_ROOT
+#STATIC_ROOT="/media/nick/Data/my/workspace/djWeb365/src/static/"
 
-STATIC_URL = '/static/'
+STATICFILES_DIRS=(
+    STATIC_PATH,
+)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+

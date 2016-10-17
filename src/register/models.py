@@ -1,6 +1,9 @@
 from django.db import models
-from dns.rdatatype import NULL
 
+class UploadFile(models.Model):
+    #docfile = models.FileField(upload_to='documents/%Y/%m/%d')
+    docfile = models.FileField(upload_to='documents/%Y/%m/%d')
+    
 # Create your models here.
 class Register(models.Model):
     url=models.CharField(max_length=128)
