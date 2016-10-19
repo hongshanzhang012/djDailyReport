@@ -43,3 +43,16 @@ django --version
 python
 python
 exit
+source env/bin/activate
+ls
+cd ..
+ls
+source env/bin/activate
+git add .
+git commit -m "2nd release"
+git push -u origin master
+git push -u origin master
+ssh root@10.1.1.82
+ssh root@10.1.1.82
+ssh root@10.1.1.82
+exit

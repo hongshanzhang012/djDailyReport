@@ -36,12 +36,28 @@ pip install django
 pip install psycopg2 #django interface to postgre db 
 pip install gunicorn
 
-#****************or clone env*************************#
-git clone https://github.com/hongshanzhang012/djWeb365.git djWeb365
+#using the following command to start gunicorn
+#navigate to src folder
+gunicorn djWeb365.wsgi #use virtual env
+#to stop service: ctrl+c
 
-then inside src directory run gunicorn djWeb365.wsgi, ctrl+c to exit #use virtual env
+#call gunicorn in background
+gunicorn djWeb365.wsgi &
+to stop service: use process manager
 
-gunicorn djWeb365.wsgi:application --env DJANGO_SETTINGS_MODULE='djWeb365.settings.development'
+#to start gunicorn when linux reboots
+#/etc/init nano djWeb365.conf
+#type:
+start on startup
+task
+exec gunicorn /var/www/djWeb365/src/djWeb365.wsgi &
+
+
+
+reload app:
+ps -xa | grep gunicorn
+kill -HUP 23435
+
 
 """
 
@@ -85,8 +101,8 @@ git remote add origin https://github.com/hongshanzhang012/djDailyReport.git
 git push -u origin master
 
 #clone a copy on deploy server
-git clone origin djWeb365
-git pull origin djWeb365
+#Don't create the folder djWeb365, no need
+git clone https://github.com/hongshanzhang012/djWeb365.git djWeb365
 
 """
 

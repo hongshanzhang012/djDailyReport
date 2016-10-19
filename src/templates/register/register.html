@@ -22,7 +22,7 @@
         <link href="{% static "css/style-responsive.css" %}" rel="stylesheet">
         
         <!-- ?os.urandom(23223) is to make django does not cache static files -->
-        <link href="{% static "css/register-form.css?os.urandom(134273)" %}" rel="stylesheet">
+        <link href="{% static "css/register-form.css?os.urandom(13473)" %}" rel="stylesheet">
         {% block style %}{% endblock style %}
 		
 	</head>
@@ -43,14 +43,16 @@
 		
         <!-- Upload form. Note enctype attribute! -->
         <form class="mainform" id="register_form" action="/register/" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
-            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
-            <p>
-                {{ form.docfile.errors }}
-                {{ form.docfile }}
-            </p>
-            <p><input type="submit" value="Upload" /></p>
+        	<table>
+	            {% csrf_token %}
+	            <p>{{ form.non_field_errors }}</p>
+	            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+	            <p>
+	                {{ form.docfile.errors }}
+	                {{ form.docfile }}
+	            </p>
+	            <p><input type="submit" value="Upload" /></p>
+            </table>
 		</form>
 
 
