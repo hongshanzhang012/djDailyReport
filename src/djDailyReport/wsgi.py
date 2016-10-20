@@ -102,7 +102,7 @@ git push -u origin master
 
 #clone a copy on deploy server
 #Don't create the folder djWeb365, no need
-git clone https://github.com/hongshanzhang012/djWeb365.git djWeb365
+git clone https://github.com/hongshanzhang012/djDailyReport.git djDailyReport
 
 """
 

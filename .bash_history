@@ -56,3 +56,8 @@ ssh root@10.1.1.82
 ssh root@10.1.1.82
 ssh root@10.1.1.82
 exit
+source env/bin/activate
+git add .
+git commit -m "company config updated"
+git push -u origin master
+exit

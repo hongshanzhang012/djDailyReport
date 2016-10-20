@@ -25,15 +25,26 @@ def fileCompare(src, dec):
     config.read(os.path.join(BASE_DIR, 'src/cmc.futuredial.com.ini'))
     
     line = srcFile.readline()
+    '''
+    PC Name=[AU-BC-BOH-D141_F4CE46106110]
+    companyid=Brightstar Australia
+    adminconsoleserver=http://cmc.futuredial.com/
+    siteid=Australia_Sydney
+    solutionid=allinone
+    productid=greent
+    Caption  FreeSpace     Size          
+    C:       20G           232G          
+    D:       
+    '''
+    desFile.write('"PC Name","Company", "Site", "Solution", "Product", "availableCSpace (G)","totalCSpace (G)", "availableDSpace (G)", "totalDSpace (G)" \r\n')
     while line:
         #in this 'if' process data of a whole company
         if line.find("Checking:", 0, len(line))>=0: 
             #pc name
-            textToWrite='\r\n'+line[10:]
+            textToWrite='"'+line[19:len(line)-2]+'",'
             
             #company
             tmp=srcFile.readline()
-            textToWrite=textToWrite+tmp[0:10]
             id=tmp[10:len(tmp)]
             id=id.replace('\r','')
             id=id.replace('\n','')
@@ -42,16 +53,15 @@ def fileCompare(src, dec):
                 companyName=config.get('CompanyID',id)
             except ConfigParser.NoOptionError, err:
                 companyName=id
-            textToWrite=textToWrite+companyName
-            textToWrite=textToWrite+'\r\n'
+            textToWrite=textToWrite+'"'+companyName
+            textToWrite=textToWrite+'",'
             
             #server
             tmp=srcFile.readline()
-            textToWrite=textToWrite+tmp
+            #textToWrite=textToWrite+tmp
             
             #site
             tmp=srcFile.readline()
-            textToWrite=textToWrite+tmp[0:7]
             id=tmp[7:len(tmp)]
             id=id.replace('\r','')
             id=id.replace('\n','')
@@ -60,12 +70,11 @@ def fileCompare(src, dec):
                 siteName=config.get('SiteID',id)
             except ConfigParser.NoOptionError, err:
                 siteName=id
-            textToWrite=textToWrite+siteName
-            textToWrite=textToWrite+'\r\n'
+            textToWrite=textToWrite+'"'+siteName
+            textToWrite=textToWrite+'",'
             
             #solution
             tmp=srcFile.readline()
-            textToWrite=textToWrite+tmp[0:11]
             id=tmp[11:len(tmp)]
             id=id.replace('\r','')
             id=id.replace('\n','')
@@ -74,12 +83,11 @@ def fileCompare(src, dec):
             except ConfigParser.NoOptionError, err:
                 solutionName=id
     
-            textToWrite=textToWrite+solutionName
-            textToWrite=textToWrite+'\r\n'
+            textToWrite=textToWrite+'"'+solutionName
+            textToWrite=textToWrite+'",'
     
             #product
             tmp=srcFile.readline()
-            textToWrite=textToWrite+tmp[0:10]
             id=tmp[10:len(tmp)]
             id=id.replace('\r','')
             id=id.replace('\n','')
@@ -88,48 +96,46 @@ def fileCompare(src, dec):
             except ConfigParser.NoOptionError, err:
                 ProductName=id
     
-            textToWrite=textToWrite+ProductName
-            textToWrite=textToWrite+'\r\n'
+            textToWrite=textToWrite+'"'+ProductName
+            textToWrite=textToWrite+'",'
     
             #FreeSpace, disk space, "file diff", Missingfiles        
             tmp=srcFile.readline()
             while tmp:
                 if len(tmp)>1 and tmp.find('FreeSpace', 0, len(tmp))>=0:
-                    needToWrite=False
-                    textToWrite=textToWrite+tmp
                     tmp=srcFile.readline()
+                    whichDrive=""
+                    availableCSpace=""
+                    totalCSpace=""
+                    availableDSpace=""
+                    totalDSpace=""
                     while tmp:#C:, D:, E:
                         if isDriveLetter(tmp):
                             pos=0
-                            cOrd=False
-                            noEnoughSpace=False
+                            
                             for s in tmp.split():#
                                 pos=pos+1
                                 if s.isdigit()==False:
-                                    if s.find('C:', 0, len(s))>=0 or s.find('D:',0, len(s))>=0:
-                                        cOrd=True
-                                    for i in range(1,10-len(s)):
-                                        s=s+' '
+                                    whichDrive=s[0:1]
                                 else:
                                     diskSpace=int(int(s)/(1073741824))
-                                    if pos==2 and diskSpace<=25:
-                                        noEnoughSpace=True
-                                    s=str(diskSpace)+'G'
-                                    for i in range(1,15-len(s)):
-                                        s=s+' '
-                                    
-                                textToWrite=textToWrite+s
-                            
-                            if cOrd==True and noEnoughSpace==True:
-                                needToWrite=True        
-                            textToWrite=textToWrite+'\r\n'
+                                    if pos==2 and whichDrive=='C':
+                                        availableCSpace=str(diskSpace)
+                                    elif pos==2 and whichDrive=='D':
+                                        availableDSpace=str(diskSpace)
+                                    if pos==3 and whichDrive=='C':
+                                        totalCSpace=str(diskSpace)
+                                    elif pos==3 and whichDrive=='D':
+                                        totalDSpace=str(diskSpace)
                             tmp=srcFile.readline()
                         elif tmp.find('Checking:', 0, len(tmp))>=0:
                             line=tmp
                             break
                         else:
                             tmp=srcFile.readline()
-                    if needToWrite==True:
+                    textToWrite=textToWrite+'"'+availableCSpace+'",'+'"'+totalCSpace+'",'+'"'+availableDSpace+'",'+'"'+totalCSpace+'",'                            
+                    textToWrite=textToWrite+'\r\n'
+                    if (availableCSpace!="" and int(availableCSpace)<=25) or  (availableDSpace!="" and int(availableDSpace)<=25) :
                         desFile.write(textToWrite)
                     
                 elif tmp.find("Checking:", 0, len(line))>=0:

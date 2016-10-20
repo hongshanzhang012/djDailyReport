@@ -35,9 +35,9 @@ def handle_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
     
-    fileCompare.fileCompare('/var/www/djDailyReport/src/src.txt', '/var/www/djDailyReport/src/result.txt')
-    #pySendEmail.sendEmail('lynnwang@futuredial.com;','/var/www/djDailyReport/src/result.txt')
+    fileCompare.fileCompare('/var/www/djDailyReport/src/src.txt', '/var/www/djDailyReport/src/result.csv')
     
-    receipients= ['lynnwang@futuredial.com', 'nzhang@futuredial.com']
-    pySendEmail.sendEmail(receipients,'/var/www/djDailyReport/src/result.txt')
+    #receipients= ['lynnwang@futuredial.com', 'nzhang@futuredial.com']
+    receipients= ['nzhang@futuredial.com']
+    pySendEmail.sendEmail(receipients,'/var/www/djDailyReport/src/result.csv')
     return
