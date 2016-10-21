@@ -44,20 +44,27 @@ gunicorn djWeb365.wsgi #use virtual env
 #call gunicorn in background
 gunicorn djWeb365.wsgi &
 to stop service: use process manager
+gunicorn -b 127.0.0.1:8000 -b [::1]:8000 djDailyReport.wsgi &
+#list gunicorn process and kill it
+ps -a
+sudo kill "any-id-with gunicorn"
+
 
 #to start gunicorn when linux reboots
-#/etc/init nano djWeb365.conf
-#type:
+sudo nano /etc/init/gunicorn.conf
+#type
+description "Gunicorn application server handling myproject"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+setuid djDailyReport
+setgid webapps2
+chdir /var/www/djDailyReport
 start on startup
 task
-exec gunicorn /var/www/djWeb365/src/djWeb365.wsgi &
-
-
-
-reload app:
-ps -xa | grep gunicorn
-kill -HUP 23435
-
+exec env/bin/gunicorn --workers 3 -b 127.0.0.1:8000 -b [::1]:8000 djDailyReport.wsgi
 
 """
 
@@ -103,6 +110,27 @@ git push -u origin master
 #clone a copy on deploy server
 #Don't create the folder djWeb365, no need
 git clone https://github.com/hongshanzhang012/djDailyReport.git djDailyReport
+
+#/etc/nginx/sites-enabled/default
+server {
+    server_name 10.1.1.82;
+    listen       8080; #80 is occupied by ipsw already
+    server_name  url365.com www.url365.com;
+    root         /var/www/djDailyReport/;
+
+    access_log off;
+
+    location /static/ {
+        alias /var/www/djDailyReport/env/static/;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_set_header X-Real-IP $remote_addr;
+        add_header P3P 'CP="ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV"';
+    }
+}
 
 """
 

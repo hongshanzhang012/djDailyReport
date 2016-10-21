@@ -61,3 +61,19 @@ git add .
 git commit -m "company config updated"
 git push -u origin master
 exit
+source env/bin/activate
+git add .
+git commit -m "csv file"
+git push -u origin master
+ssh root@10.1.1.82
+ls
+cd src
+ls
+cd djDailyReport
+ls
+cd ..
+ls
+cd register
+ls
+nano views.py
+exit
