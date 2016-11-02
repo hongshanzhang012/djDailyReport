@@ -13,13 +13,11 @@ def isDriveLetter(tmpString):
             return True
     return False
 
-def fc():
-    fileCompare('iphoneCompare.txt', 'resultFile.txt')
-    
-def fileCompare(src, dec):
+def fileCompare(src, dec, decAll):
     ## Open the file with read only permit
     srcFile = open(src)
     desFile = open (dec, 'w')
+    desFileAll = open (decAll, 'w')
     
     config = ConfigParser.RawConfigParser(allow_no_value=True)
     config.read(os.path.join(BASE_DIR, 'src/cmc.futuredial.com.ini'))
@@ -37,11 +35,15 @@ def fileCompare(src, dec):
     D:       
     '''
     desFile.write('"PC Name","Company", "Site", "Solution", "Product", "availableCSpace (G)","totalCSpace (G)", "availableDSpace (G)", "totalDSpace (G)" \r\n')
+    desFileAll.write('"PC Name","Company", "Site", "Solution", "Product", "availableCSpace (G)","totalCSpace (G)", "availableDSpace (G)", "totalDSpace (G)" \r\n')
     while line:
         #in this 'if' process data of a whole company
         if line.find("Checking:", 0, len(line))>=0: 
             #pc name
-            textToWrite='"'+line[19:len(line)-2]+'",'
+            textToWrite='"'+line[19:len(line)-3]+'",'
+            
+            #if line[19:len(line)-3]=="AU-BC-BOH-D141_F4CE46106110":
+            #    print("debug")
             
             #company
             tmp=srcFile.readline()
@@ -112,30 +114,38 @@ def fileCompare(src, dec):
                     while tmp:#C:, D:, E:
                         if isDriveLetter(tmp):
                             pos=0
-                            
-                            for s in tmp.split():#
+                            for s in tmp.split():# one drive
                                 pos=pos+1
                                 if s.isdigit()==False:
                                     whichDrive=s[0:1]
                                 else:
                                     diskSpace=int(int(s)/(1073741824))
                                     if pos==2 and whichDrive=='C':
-                                        availableCSpace=str(diskSpace)
+                                        availableCSpace=str(diskSpace) if diskSpace!=None else 'N/A'
                                     elif pos==2 and whichDrive=='D':
-                                        availableDSpace=str(diskSpace)
-                                    if pos==3 and whichDrive=='C':
-                                        totalCSpace=str(diskSpace)
+                                        availableDSpace=str(diskSpace) if diskSpace!=None else 'N/A'
+                                    elif pos==3 and whichDrive=='C':
+                                        totalCSpace=str(diskSpace) if diskSpace!=None else 'N/A'
                                     elif pos==3 and whichDrive=='D':
-                                        totalDSpace=str(diskSpace)
+                                        totalDSpace=str(diskSpace) if diskSpace!=None else 'N/A'
                             tmp=srcFile.readline()
                         elif tmp.find('Checking:', 0, len(tmp))>=0:
                             line=tmp
                             break
                         else:
                             tmp=srcFile.readline()
-                    textToWrite=textToWrite+'"'+availableCSpace+'",'+'"'+totalCSpace+'",'+'"'+availableDSpace+'",'+'"'+totalCSpace+'",'                            
+                    
+                    availableCSpace=availableCSpace if availableCSpace!='' else 'N/A'
+                    availableDSpace=availableDSpace if availableDSpace!='' else 'N/A'
+                    totalCSpace=totalCSpace if totalCSpace!='' else 'N/A'
+                    totalDSpace=totalDSpace if totalDSpace!='' else 'N/A'
+                    
+                    textToWrite=textToWrite+'"'+availableCSpace+'",'+'"'+totalCSpace+'",'+'"'+availableDSpace+'",'+'"'+totalDSpace+'",'                            
                     textToWrite=textToWrite+'\r\n'
-                    if (availableCSpace!="" and int(availableCSpace)<=25) or  (availableDSpace!="" and int(availableDSpace)<=25) :
+
+                    desFileAll.write(textToWrite)
+                    #if (availableCSpace!="N/A" and int(availableCSpace)<=25) or  (availableDSpace!="N/A" and int(availableDSpace)<=25) :
+                    if availableCSpace!="N/A" and int(availableCSpace)<=25:
                         desFile.write(textToWrite)
                     
                 elif tmp.find("Checking:", 0, len(line))>=0:
@@ -148,4 +158,5 @@ def fileCompare(src, dec):
             line=srcFile.readline()    
     srcFile.close()
     desFile.close()
+    desFileAll.close()
     

@@ -77,3 +77,12 @@ cd register
 ls
 nano views.py
 exit
+git add .
+git commit -m "add lynn email"
+ssh root@10.1.1.82
+sudo su - djDailyReport
+source env/bin/activate
+git push -u origin master
+git push -u origin master
+exit
+exit

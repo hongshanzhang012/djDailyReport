@@ -32,6 +32,8 @@ virtualenv -p /usr/local/lib/python2.7.11/bin/python env
 
 sudo su - djDailyReport
 source env/bin/activate #use deactivate to exit virtualenv
+#may need sudo apt-get install python-pip first 
+#no need to install django/gunicorn if git clone 
 pip install django
 pip install psycopg2 #django interface to postgre db 
 pip install gunicorn

@@ -16,7 +16,7 @@ SERVER_IPADDRESS = "http://10.1.1.82:8080/"
 #SERVER_IPADDRESS = "http://127.0.0.1/"
 
 #def sendEmail(to, gmail_user, gmail_pwd):
-def sendEmail(to, file):
+def sendEmail(to, file, file2):
     gmail_user = "hongshanzhang012@gmail.com"
     gmail_pwd = 'gFromtj01'
 
@@ -58,6 +58,14 @@ def sendEmail(to, file):
             Name=basename(file)
         )
         part['Content-Disposition'] = 'attachment; filename="%s"' % basename(file)
+        msg.attach(part)    
+
+    with open(file2, "rb") as fil:
+        part = MIMEApplication(
+            fil.read(),
+            Name=basename(file2)
+        )
+        part['Content-Disposition'] = 'attachment; filename="%s"' % basename(file2)
         msg.attach(part)    
 
     # Record the MIME types of both parts - text/plain and text/html.
