@@ -88,7 +88,10 @@ sudo apt-get install git
 
 git init #create git folder under project folder
 git status -s (long or short) 
-git add . #add project tree index. call it everytime the project tree changed
+
+#stage change: git add, so git knows about the changes but they are not commited, you can still reset the changes
+
+git add . #add project tree index. call it everytime the project tree changed,
 git commit -m "commit message" # m stands for commit message
 git commit -a # omit git add .
 git reset HEAD -- hello.py #unstage the file
@@ -103,6 +106,9 @@ git merge hotfix
 git branch -d hotfix #Deleted branch hotfix (3a0874c).
 
 #remote link named as "origin", usr/pass: gmail, g2
+#on windows git config --global user.name "hongshanzhang012", 
+# git config --global user.email "hongshanzhang012@gmail.com"
+
 #add this repository from web first, then
 git remote add origin https://github.com/hongshanzhang012/djDailyReport.git
 #this branch will be our master branch 
