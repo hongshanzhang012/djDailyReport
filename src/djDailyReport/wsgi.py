@@ -105,13 +105,12 @@ git checkout master
 git merge hotfix
 git branch -d hotfix #Deleted branch hotfix (3a0874c).
 
-#remote link named as "origin", usr/pass: gmail, g2
-#on windows git config --global user.name "hongshanzhang012", 
+# on windows git config --global user.name "hongshanzhang012", 
 # git config --global user.email "hongshanzhang012@gmail.com"
 
-#add this repository from web first, then
+#remote link named as "origin", usr/pass: gmail, g2
 git remote add origin https://github.com/hongshanzhang012/djDailyReport.git
-#this branch will be our master branch 
+#this brganch will be our master branch 
 #master is only a parameter stored in .git/config
 git push -u origin master
 
